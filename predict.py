@@ -50,7 +50,11 @@ class Predictor(BasePredictor):
     def ispyrenet(self, input_image):
 
         # Load model
-        remover = Remover(mode='base', device='cuda:0', ckpt="./checkpoint/latest.pth")
+        if torch.cuda.is_available():
+            device = 'cuda:0'
+        else:
+            device = 'cpu'
+        remover = Remover(mode='base', device=device, ckpt="./checkpoint/latest.pth")
         ispyrenet_output = remover.process(input_image)
         # ispyrenet_output = remover.process(input_image, threshold=0.5) # use threhold parameter for hard prediction.
                 
@@ -319,7 +323,7 @@ class Predictor(BasePredictor):
         alpha_np = alpha.convert('L')  # Convert to grayscale
         alpha_np = np.array(alpha_np)  # Convert to numpy array
 
-        fg2 = self.cal_foreground2(Image.fromarray(input_x_RGBA), alpha_np) #vitmatte 결과이지만 배경이 흰색이 아닌 투명
+        fg2 = self.cal_foreground2(Image.fromarray(input_x_RGBA), alpha_np) #vitmatte result but the background is transparent rather than white
 
         return fg2
 
@@ -332,7 +336,7 @@ class Predictor(BasePredictor):
             device = 'cpu'
 
         #vitmatte_model = 'vit_b'
-        vitmatte_model = self.init_model(model='vitmatte-b', checkpoint='./checkpoint/ViTMatte_B_DIS.pth', device=device) #상대경로 확인 
+        vitmatte_model = self.init_model(model='vitmatte-b', checkpoint='./checkpoint/ViTMatte_B_DIS.pth', device=device) #Check relative path
 
         erode_kernel_size =10
         dilate_kernel_size=10
@@ -353,7 +357,7 @@ class Predictor(BasePredictor):
         # Your code to perform the operations using input_path and mask_path goes here
         
         # Example:
-        mask = self.covert_tracer_output_to_vitmatte_input2(mask_image) #이때, 입력값 mask_image는 검흰 아직 아님..배경 제거만 된 실제 이미지
+        mask = self.covert_tracer_output_to_vitmatte_input2(mask_image) #At this time, the input value mask_image is not yet black and white...the actual image with only the background removed.
         foreground_alpha2 = self.run_vitmatte(vitmatte_model, input_image_arr, input_image_arr_RGBA, mask, erode_kernel_size, dilate_kernel_size, fg_box_threshold, fg_text_threshold, fg_caption, tr_box_threshold, tr_text_threshold, tr_caption)
 
         return foreground_alpha2
