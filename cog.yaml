@@ -33,9 +33,9 @@ build:
     - pip install transparent-background==1.2.12 fairscale timm
     - apt update -y
     - apt install git -y
-    - git clone https://github.com/smoretalk/ViTMatte.git
+    - git clone https://github.com/hustvl/ViTMatte.git
     # - python -m pip install 'git+https://github.com/plemeri/transparent-background.git'
-    - python -m pip install 'git+https://github.com/smoretalk/detectron2.git'
+    - python -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
     # - pip install --upgrade --no-cache-dir gdown
     # - gdown https://drive.google.com/uc?id=1d97oKuITCeWgai2Tf3iNilt6rMSSYzkW -O ./checkpoint/ViTMatte_B_DIS.pth
 
